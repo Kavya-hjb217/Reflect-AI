@@ -1,10 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Calendar } from "lucide-react";
+import { Calendar, FileText } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { Sparkles, Lock } from "lucide-react";
-import { Book } from "lucide-react";
+import { Sparkles, Lock, Book } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const features = [
@@ -31,6 +30,7 @@ const features = [
 export default function Home() {
   return (
     <div className="relative container mx-auto px-4 pt-16 pb-16">
+      {/* Hero Section */}
       <div className="max-w-5xl mx-auto text-center space-y-8">
         <h1 className="text-5xl md:text-7xl lg:text-8xl mb-6 gradient-title">
           Your Space to Reflect. <br /> Your Story to Tell.
@@ -40,9 +40,10 @@ export default function Home() {
           in a beautiful, secure space.
         </p>
 
+        {/* Example Entry Box */}
         <div className="relative">
           <div className="absolute -inset-0 bg-gradient-to-t from-orange-50 via-transparent to-transparent pointer-events-none z-10" />
-          <div className="bg-white rounded-2xl p-4 max-full mx-auto">
+          <div className="bg-white rounded-2xl p-4 max-w-full mx-auto">
             <div className="border-b border-orange-100 pb-4 mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Calendar className="h-5 w-5 text-orange-600" />
@@ -58,7 +59,7 @@ export default function Home() {
             </div>
             <div className="space-y-4 p-4">
               <h3 className="text-xl font-semibold text-orange-900">
-                daily prompts
+                Daily Prompts
               </h3>
               <Skeleton className="h-4 bg-orange-100 rounded w-3/4" />
               <Skeleton className="h-4 bg-orange-100 rounded w-full" />
@@ -67,6 +68,7 @@ export default function Home() {
           </div>
         </div>
 
+        {/* CTA Buttons */}
         <div className="flex justify-center gap-4">
           <Link href="/dashboard">
             <Button
@@ -88,12 +90,16 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Features Section */}
       <section
         id="features"
         className="mt-24 grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4"
       >
         {features.map((feature) => (
-          <Card key={feature.title} className="shadow-lg">
+          <Card
+            key={feature.title}
+            className="shadow-lg hover:shadow-xl transition-shadow"
+          >
             <CardContent className="p-6">
               <div className="h-12 w-12 bg-orange-100 rounded-md flex items-center justify-center mb-4">
                 <feature.icon className="h-6 w-6 text-orange-600" />
@@ -106,6 +112,38 @@ export default function Home() {
           </Card>
         ))}
       </section>
+
+      {/* Detailed Feature Sections (with placeholders for later) */}
+      <div className="max-w-7xl mx-auto px-4 mt-24 space-y-24">
+        {/* Rich Text Editor */}
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6">
+            <div className="h-12 w-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+              <FileText className="h-6 w-6 text-orange-600" />
+            </div>
+            <h3 className="text-2xl font-bold text-orange-900">
+              Rich Text Editor
+            </h3>
+            <p className="text-lg text-orange-700">
+              Express yourself fully with our powerful editor featuring:
+            </p>
+            <ul className="space-y-3">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-orange-600" />
+                <span>Format text with ease</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-orange-600" />
+                <span>Embed Links</span>
+              </li>
+            </ul>
+          </div>
+          <div></div>
+        </div>
+
+        {/* Placeholder for future feature details */}
+        <div></div>
+      </div>
     </div>
   );
 }
