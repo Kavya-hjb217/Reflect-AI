@@ -1,10 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { Calendar, FileText } from "lucide-react";
+import { BarChart2, Calendar, FileText } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Sparkles, Lock, Book } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import TestimonialCarousel from "@/components/testimonial-carousel";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionTrigger,
+  AccordionItem,
+} from "@/components/ui/accordion";
+import faqs from "@/data/faqs";
 
 const features = [
   {
@@ -138,11 +146,95 @@ export default function Home() {
               </li>
             </ul>
           </div>
-          <div></div>
+          <div className="bg-white rounded-2xl p-6 border border-orange-100 space-y-4">
+            <div className="flex gap-2 mb-6">
+              <div className="h-8 w-8 rounded bg-orange-100" />
+              <div className="h-8 w-8 rounded bg-orange-100" />
+              <div className="h-8 w-8 rounded bg-orange-100" />
+            </div>
+            <div className="h-4 bg-orange-50 rounded w-3/4" />
+            <div className="h-4 bg-orange-50 rounded w-full" />
+            <div className="h-4 bg-orange-50 rounded w-2/3" />
+            <div className="h-4 bg-orange-50 rounded w-3/4" />
+          </div>
         </div>
 
         {/* Placeholder for future feature details */}
-        <div></div>
+        {/* Rich Text Editor */}
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="bg-white rounded-2xl p-6 border border-orange-100 space-y-4">
+            <div className="h-40 bg-gradient-to-t from-orange-100 to-orange-50 rounded-lg"></div>
+            <div className="flex justify-between ">
+              <div className="h-4  w-16 bg-orange-100 rounded " />
+              <div className="h-4  w-16 bg-orange-100 rounded " />
+              <div className="h-4  w-16 bg-orange-100 rounded " />
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="h-12 w-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+              <BarChart2 className="h-6 w-6 text-orange-600" />
+            </div>
+            <h3 className="text-2xl font-bold text-orange-900">
+              Mood Analytics
+            </h3>
+            <p className="text-lg text-orange-700">
+              Track your emotional journey with insightful analytics:
+            </p>
+            <ul className="space-y-3">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-orange-600" />
+                <span>Visual mood trends</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-orange-600" />
+                <span>recognize patterns</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <TestimonialCarousel />
+
+        <div className="mt-24">
+          <h2 className="text-3xl font-bold text-center text-orange-900 mb-12">
+            Frequently Asked Questions
+          </h2>
+          <Accordion type="single" collapsible className="w-full mx-auto">
+            {faqs.map((faq, index) => (
+              <AccordionItem key={index} value={`item-${index}`}>
+                <AccordionTrigger className="text-orange-900 text-lg">
+                  {faq.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-orange-700">
+                  {faq.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+
+        <div className="mt-24 max-w-3xl mx-auto">
+          <Card className="bg-gradient-to-r from-orange-100 to-amber-50 border border-orange-100 shadow-lg hover:shadow-xl transition-shadow">
+            <CardContent className="text-center p-12"> 
+              <h2 className="text-3xl font-bold text-orange-900 mb-6">
+                Start reflecting on your journey today
+              </h2>
+              <p className="text-lg text-orange-700 mb-8 max-w-2xl mx-auto">
+                Join thousands of writers who have already discovered the power
+                of self-reflection using Reflect.
+              </p>
+              <Link href="/dashboard">
+                <Button
+                  size="lg"
+                  variant="journal"
+                  className="rounded-full animate-bounce"
+                >
+                  Get Started for Free<ChevronRight className="ml-2 h-4 w-4 "/>
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
