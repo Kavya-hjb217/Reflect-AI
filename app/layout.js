@@ -4,6 +4,7 @@ import Header from "@/components/header";
 import { Inter } from "next/font/google";
 import React from "react";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default function RootLayout({ children }) {
 
           <Header />
           <main className="min-h-screen">{children}</main>
+          <Toaster richColors />
 
           {/* Transparent Footer */}
           <footer className="bg-transparent py-12">

@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import "react-quill-new/dist/quill.snow.css";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,10 +16,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getMoodById, MOODS } from "@/app/lib/moods";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import useFetch from "@/hooks/use-fetch";
+import { createJournalEntry } from "@/actions/journal";
+import { toast } from "sonner";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 const JournalEntryPage = () => {
+  // ✅ FIXED: Removed the nested JournalEntryPage function
+  const {
+    loading: actionLoading,
+    fn: actionFn,
+    data: actionResult,
+  } = useFetch(createJournalEntry);
+
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -35,18 +49,40 @@ const JournalEntryPage = () => {
       collectionId: "",
     },
   });
-  const isLoading = false;
+
+  const isLoading = actionLoading;
+
+  useEffect(() => {
+    if (actionResult && !actionLoading) {
+      router.push(
+        `/collection/${
+          actionResult.collectionId ? actionResult.collectionId : "unorganized"
+        }`
+      );
+
+      toast.success("Entry created successfully");
+    }
+  }, [actionResult, actionLoading, router]);
+
+  const onSubmit = handleSubmit(async (data) => {
+    const mood = getMoodById(data.mood);
+    actionFn({
+      ...data,
+      moodScore: mood.score,
+      moodQuery: mood.pixabayQuery,
+    });
+  });
 
   return (
-    <div className="py-6">
-      <form className="space-y-2 mx-auto">
+    <div className="py-6 mx-12">
+      <form className="space-y-2 mx-auto" onSubmit={onSubmit}>
         <h1 className="text-5xl md:text-6xl gradient-title">
           What&apos;s on your mind?
         </h1>
         {isLoading && <BarLoader color="orange" width={"100%"} />}
 
+        {/* Title */}
         <div className="space-y-2">
-          <label className="text-sm font-medium"> </label>
           <Input
             disabled={isLoading}
             {...register("title")}
@@ -60,43 +96,38 @@ const JournalEntryPage = () => {
           )}
         </div>
 
+        {/* Mood Select */}
         <div className="space-y-2">
-          <label className="text-sm font-medium">
-            How are you feeling today?
-          </label>
+          <label className="text-sm font-medium">How are you feeling today?</label>
           <Controller
             name="mood"
             control={control}
-            render={(field) => {
-              return (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger
-                    className={errors.mood ? "border-red-500" : ""}
-                  >
-                    <SelectValue placeholder="Choose your mood" />
-                  </SelectTrigger>
-                  <SelectContent
-                    position="popper"
-                    className="max-h-60 overflow-y-auto"
-                  >
-                    {Object.values(MOODS).map((mood) => {
-                      return (
-                        <SelectItem key={mood.id} value={mood.id}>
-                          <span className="flex items-center gap-2">
-                            {mood.emoji} {mood.label}
-                          </span>
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-              );
-            }}
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger className={errors.mood ? "border-red-500" : ""}>
+                  <SelectValue placeholder="Choose your mood" />
+                </SelectTrigger>
+                <SelectContent
+                  position="popper"
+                  className="max-h-60 overflow-y-auto"
+                >
+                  {Object.values(MOODS).map((mood) => (
+                    <SelectItem key={mood.id} value={mood.id}>
+                      <span className="flex items-center gap-2">
+                        {mood.emoji} {mood.label}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           />
           {errors.mood && (
             <p className="text-sm text-red-500">{errors.mood.message}</p>
           )}
         </div>
+
+        {/* Content Editor */}
         <div className="space-y-2">
           <label className="text-sm font-medium">
             {getMoodById(getValues("mood"))?.prompt ?? "Write your thoughts..."}
@@ -123,27 +154,28 @@ const JournalEntryPage = () => {
               />
             )}
           />
-
           {errors.content && (
             <p className="text-sm text-red-500">{errors.content.message}</p>
           )}
         </div>
+
+        {/* Collection (optional) */}
         <div className="space-y-2">
           <label className="text-sm font-medium">
             Add to Collection (optional)
           </label>
-          {/* <Controller
-            name="content"
-            control={control}
-            render={({ field }) => (
-              
-              
-            )}
-          /> */}
-
           {errors.collectionId && (
-            <p className="text-sm text-red-500">{errors.collectionId.message}</p>
+            <p className="text-sm text-red-500">
+              {errors.collectionId.message}
+            </p>
           )}
+        </div>
+
+        {/* Submit */}
+        <div className="space-y-4 flex">
+          <Button type="submit" variant="journal">
+            Publish
+          </Button>
         </div>
       </form>
     </div>
