@@ -1,5 +1,6 @@
 "use server";
-import { unstable_cache } from "next/cache";
+
+import { revalidateTag, unstable_cache } from "next/cache";
 
 export async function getPixabayImage(query) {
   try {
@@ -13,6 +14,7 @@ export async function getPixabayImage(query) {
     return null;
   }
 }
+
 export const getDailyPrompt = unstable_cache(
   async () => {
     try {
@@ -28,9 +30,14 @@ export const getDailyPrompt = unstable_cache(
       };
     }
   },
-  ["daily-prompt"],
+  ["daily-prompt"], // cache key
   {
-    revalidate: 86400, // Revalidate once every 24 hours
+    revalidate: 86400, // 24 hours in seconds
     tags: ["daily-prompt"],
   }
 );
+
+// Optional: Function to force revalidate the cache
+export async function revalidateDailyPrompt() {
+  revalidateTag("daily-prompt");
+}
